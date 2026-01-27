@@ -23,10 +23,27 @@ import { Homepage } from './globals/Homepage';
 import { IRA } from './globals/IRA';
 import { Service } from './globals/Service';
 import { Menu } from './globals/Menu';
-import { seedAdmin } from './scripts/seed/seeders/admin.seeder';
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
+
+const hasVercelBlobStorage = Boolean(env.VERCEL_BLOB_READ_WRITE_TOKEN);
+console.log('hasVercelBlobStorage', hasVercelBlobStorage);
+const hasS3Storage =
+  Boolean(env.S3_BUCKET && env.S3_ACCESS_KEY_ID && env.S3_SECRET_ACCESS_KEY && env.S3_ENDPOINT);
+console.log('hasS3Storage', hasS3Storage);
+const s3Config = hasS3Storage
+  ? {
+      bucket: env.S3_BUCKET!,
+      accessKeyId: env.S3_ACCESS_KEY_ID!,
+      secretAccessKey: env.S3_SECRET_ACCESS_KEY!,
+      endpoint: env.S3_ENDPOINT!,
+    }
+  : null;
+
+if (hasVercelBlobStorage && hasS3Storage) {
+  throw new Error('Configure only one media storage backend: Vercel Blob or S3.');
+}
 
 export default buildConfig({
   admin: {
@@ -60,7 +77,7 @@ export default buildConfig({
   sharp,
   plugins: [
     // Vercel Blob Storage - Enable when token is configured
-    ...(env.VERCEL_BLOB_READ_WRITE_TOKEN
+    ...(hasVercelBlobStorage
       ? [
         vercelBlobStorage({
           enabled: true,
@@ -72,20 +89,20 @@ export default buildConfig({
       ]
       : []),
     // Cloudflare R2 Storage - Enable when S3 credentials are configured
-    ...(env.S3_BUCKET && env.S3_ACCESS_KEY_ID && env.S3_SECRET_ACCESS_KEY && env.S3_ENDPOINT
+    ...(s3Config
       ? [
         s3Storage({
           collections: {
             media: true,
           },
-          bucket: env.S3_BUCKET,
+          bucket: s3Config.bucket,
           config: {
             credentials: {
-              accessKeyId: env.S3_ACCESS_KEY_ID,
-              secretAccessKey: env.S3_SECRET_ACCESS_KEY,
+              accessKeyId: s3Config.accessKeyId,
+              secretAccessKey: s3Config.secretAccessKey,
             },
             region: 'auto', // Cloudflare R2 uses 'auto' as the region
-            endpoint: env.S3_ENDPOINT,
+            endpoint: s3Config.endpoint,
           },
         }),
       ]
