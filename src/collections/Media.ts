@@ -10,6 +10,8 @@ const disableLocalStorage =
       env.S3_ENDPOINT,
   );
 
+  console.log('disableLocalStorage', disableLocalStorage);
+
 export const Media: CollectionConfig = {
   slug: 'media',
   access: {
