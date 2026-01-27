@@ -41,9 +41,6 @@ export default buildConfig({
       },
     }),
   },
-  onInit: async (payload) => {
-    await seedAdmin(payload);
-  },
   collections: [Users, Media, Pages],
   globals: [GlobalInfo, About, Bunker, Consultation, Contact, Footer, Homepage, IRA, Service, Menu],
   editor: lexicalEditor({
