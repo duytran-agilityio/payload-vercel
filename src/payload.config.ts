@@ -27,7 +27,7 @@ import { Menu } from './globals/Menu';
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
-const hasVercelBlobStorage = Boolean(env.VERCEL_BLOB_READ_WRITE_TOKEN);
+const hasVercelBlobStorage = Boolean(env.BLOB_READ_WRITE_TOKEN);
 console.log('hasVercelBlobStorage', hasVercelBlobStorage);
 const hasS3Storage =
   Boolean(env.S3_BUCKET && env.S3_ACCESS_KEY_ID && env.S3_SECRET_ACCESS_KEY && env.S3_ENDPOINT);
@@ -84,7 +84,7 @@ export default buildConfig({
           collections: {
             media: true,
           },
-          token: env.VERCEL_BLOB_READ_WRITE_TOKEN,
+          token: env.BLOB_READ_WRITE_TOKEN,
         }),
       ]
       : []),

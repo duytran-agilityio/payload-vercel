@@ -2,7 +2,7 @@ import { env } from '@/libs/env';
 import type { CollectionConfig } from 'payload';
 
 const disableLocalStorage =
-  Boolean(env.VERCEL_BLOB_READ_WRITE_TOKEN) ||
+  Boolean(env.BLOB_READ_WRITE_TOKEN) ||
   Boolean(
     env.S3_BUCKET &&
       env.S3_ACCESS_KEY_ID &&

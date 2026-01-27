@@ -1,6 +1,32 @@
 import { createEnv } from '@t3-oss/env-nextjs'
 import { z } from 'zod'
 
+const logEnvSummary = () => {
+  const nodeEnv = process.env.NODE_ENV ?? 'unknown'
+  const runtimeEnv = process.env.VERCEL_ENV ?? nodeEnv
+
+  if (nodeEnv !== 'test') {
+    console.info(`[env] Using environment: ${runtimeEnv}`)
+  }
+}
+
+const formatMissingEnv = (error: unknown) => {
+  if (!(error instanceof z.ZodError)) {
+    return { missing: [], issues: [] }
+  }
+
+  const missing = error.issues
+    .filter(
+      (issue) =>
+        issue.code === 'invalid_type' && issue.message.toLowerCase().includes('required'),
+    )
+    .map((issue) => issue.path.join('.'))
+
+  return { missing, issues: error.issues }
+}
+
+logEnvSummary()
+
 export const env = createEnv({
   server: {
 
@@ -21,7 +47,7 @@ export const env = createEnv({
     MIGRATION_SECRET: z.string().optional(),
 
     // Vercel Blob Storage (optional for local development)
-    VERCEL_BLOB_READ_WRITE_TOKEN: z.string().optional(),
+    BLOB_READ_WRITE_TOKEN: z.string().optional(),
 
     // Cloudflare R2 Storage (optional - alternative to Vercel Blob)
     S3_BUCKET: z.string().optional(),
@@ -37,4 +63,17 @@ export const env = createEnv({
   },
   client: {},
   experimental__runtimeEnv: process.env,
+  onValidationError: (error) => {
+    const { missing, issues } = formatMissingEnv(error)
+    const nodeEnv = process.env.NODE_ENV ?? 'unknown'
+    const runtimeEnv = process.env.VERCEL_ENV ?? nodeEnv
+
+    console.error('[env] Missing or invalid environment variables', {
+      runtimeEnv,
+      missing,
+      issues,
+    })
+
+    throw error
+  },
 })
