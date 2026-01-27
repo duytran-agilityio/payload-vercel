@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "src/app/api/migrate/route.ts": {
+      "maxDuration": 60
+    }
+  }
+}
