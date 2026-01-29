@@ -14,26 +14,23 @@ export const env = createEnv({
     CMS_SEED_ADMIN_PASSWORD: z.string(),
 
     // strapi
-    STRAPI_API_URL: z.string(),
-    STRAPI_API_TOKEN: z.string(),
+    STRAPI_API_URL: z.string().optional(),
+    STRAPI_API_TOKEN: z.string().optional(),
 
     // Migration endpoint
     MIGRATION_SECRET: z.string().optional(),
 
-    // Vercel Blob Storage (optional for local development)
-    BLOB_READ_WRITE_TOKEN: z.string().optional(),
-
     // Cloudflare R2 Storage (optional - alternative to Vercel Blob)
-    S3_BUCKET: z.string().optional(),
-    S3_ACCESS_KEY_ID: z.string().optional(),
-    S3_SECRET_ACCESS_KEY: z.string().optional(),
-    S3_ENDPOINT: z.string().optional(),
+    S3_BUCKET: z.string(),
+    S3_ACCESS_KEY_ID: z.string(),
+    S3_SECRET_ACCESS_KEY: z.string(),
+    S3_ENDPOINT: z.string(),
 
     // Google OAuth2 Plugin
-    GOOGLE_OAUTH_IDENTITY_METADATA: z.string().optional(),
-    GOOGLE_OAUTH_CLIENT_ID: z.string().optional(),
-    GOOGLE_OAUTH_CLIENT_SECRET: z.string().optional(),
-    ALLOWED_EMAIL_DOMAINS: z.string().optional(),
+    GOOGLE_OAUTH_IDENTITY_METADATA: z.string(),
+    GOOGLE_OAUTH_CLIENT_ID: z.string(),
+    GOOGLE_OAUTH_CLIENT_SECRET: z.string(),
+    ALLOWED_EMAIL_DOMAINS: z.string(),
   },
   client: {},
   experimental__runtimeEnv: process.env,

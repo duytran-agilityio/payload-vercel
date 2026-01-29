@@ -1,16 +1,4 @@
-import { env } from '@/libs/env';
 import type { CollectionConfig } from 'payload';
-
-const disableLocalStorage =
-  Boolean(env.BLOB_READ_WRITE_TOKEN) ||
-  Boolean(
-    env.S3_BUCKET &&
-      env.S3_ACCESS_KEY_ID &&
-      env.S3_SECRET_ACCESS_KEY &&
-      env.S3_ENDPOINT,
-  );
-
-  console.log('disableLocalStorage', disableLocalStorage);
 
 export const Media: CollectionConfig = {
   slug: 'media',
@@ -34,7 +22,6 @@ export const Media: CollectionConfig = {
     },
   ],
   upload: {
-    disableLocalStorage,
     formatOptions: {
       format: 'webp',
     },
